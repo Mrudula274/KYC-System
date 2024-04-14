@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+</head>
+<body>
+    <h1>Extracted Data</h1>
+    <p><strong>Name:</strong> {{ name }}</p>
+    <p><strong>Date of Birth:</strong> {{ dob }}</p>
+    <p><strong>Gender:</strong> {{ gender }}</p>
+    <p><strong>Aadhaar Number:</strong> {{ aadhaar }}</p>
+
+    <h1>Extracted Face</h1>
+    <img src="{{ url_for('static', filename=face_image) }}" alt="Extracted Face">
+
+    <!-- You can style and format the data as needed -->
+
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

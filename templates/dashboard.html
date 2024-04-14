@@ -1,0 +1,502 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        #upload-section {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .inst{
+            display: flex;
+           margin-top: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        float: left; /* Float the instructions section to the left */
+        width: 60%; /* Adjust the width as needed */
+        margin-right: 70px;
+
+            }
+
+
+    #instructions-section h2 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    #instructions-section p {
+        font-size: 16px;
+    }
+
+    #instructions-section ol {
+        list-style-type: decimal;
+        margin-left: 20px;
+        padding-left: 10px;
+    }
+
+    #instructions-section li {
+        margin-bottom: 10px;
+    }
+
+     #image-section {
+     flex-direction : right;
+                float: right; /* Float the image section to the right */
+        width: 35%; /* Adjust the width as needed */
+        margin-top: 20px;
+
+
+    }
+
+    #image-section img {
+         max-width: 60%;
+        height: 80%;
+        display: block;
+        border-radius: 10px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>KYC Dashboard</h1>
+        <div id="upload-section">
+            <h2>Upload Document</h2>
+            <input type="file" id="document-upload" accept=".pdf, .jpg, .png, .jpeg">
+            <button id="process-document">Process Document</button>
+        </div>
+    </div>
+    <div class="inst">
+
+
+    <div id="instructions-section">
+    <h2>Instructions</h2>
+    <p>Please follow these instructions:</p>
+    <ol>
+        <li>Choose a document file (PDF, JPG, PNG, or JPEG) using the "Choose File" button above.</li>
+        <li>Click the "Process Document" button to upload and process the selected file.</li>
+        <li>Wait for the processing to complete, and you will see the results in the console.</li>
+    </ol>
+</div>
+
+<div id="image-section">
+    <img src="https://www.shutterstock.com/shutterstock/photos/1661857768/display_1500/stock-vector-dummy-aadhar-card-unique-identity-document-for-indian-citizen-issued-by-government-of-india-vector-1661857768.jpg" alt="Instructions Image">
+</div>
+        </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const documentUploadInput = document.getElementById("document-upload");
+            const processDocumentButton = document.getElementById("process-document");
+
+            let uploadedDocument = null;
+
+            // Event listener for document upload
+            documentUploadInput.addEventListener("change", function (event) {
+                uploadedDocument = event.target.files[0];
+            });
+
+            // Event listener for processing the document
+            processDocumentButton.addEventListener("click", function () {
+                if (uploadedDocument) {
+                    // Create a FormData object to send the uploaded file
+                    const formData = new FormData();
+                    formData.append("file", uploadedDocument);
+
+                    // Send the uploaded file to the server using
+                    fetch("/dashboard", {
+                        method: "POST",
+                        body: formData,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Handle the response from the server
+                            console.log(data.image_path);
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                        });
+                } else {
+                    alert("Please upload a document first.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: skyblue;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+
+        }
+
+        /* Navigation links */
+        .navbar a {
+            color: white;
+            float: right;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* On hover, the links will change color */
+        .navbar a:hover {
+            background-color: white;
+            color: skyblue;
+            font-weight: bold;
+        }
+
+        /* Create a "hamburger" icon for the responsive navigation menu */
+        .navbar .icon {
+            display: none;
+            float: right;
+        }
+
+        /* Style the icon */
+        .navbar .icon:hover {
+            background-color: transparent;
+        }
+
+        /* Show the navigation links when the screen is wide enough */
+        @media screen and (min-width: 768px) {
+            .navbar a {
+                display: inline-block;
+            }
+
+            .navbar .icon {
+                display: none;
+            }
+        }
+
+        /* Show the "hamburger" icon and hide the navigation links when the screen is narrow */
+        @media screen and (max-width: 767px) {
+            .navbar a:not(.icon) {
+                display: none;
+            }
+
+            .navbar a.icon {
+                display: block;
+            }
+
+            /* Show the navigation links when the icon is clicked (toggle between showing and hiding) */
+            .navbar.responsive {
+                position: relative;
+            }
+
+            .navbar.responsive a {
+                display: block;
+                text-align: left;
+            }
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            margin-top: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        #upload-section {
+            margin-top: 20px;
+            float: right;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            margin-right: 120px;
+            height: 355px;
+            width:30%;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            height: 165px;
+        }
+
+        #file-name {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .inst{
+            display: flex;
+            margin-top: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            float: left;
+            width: 50%;
+            margin-left: 70px;
+        }
+
+        #instructions-section h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #instructions-section p {
+            font-size: 16px;
+        }
+
+        #instructions-section ol {
+            list-style-type: decimal;
+            margin-left: 20px;
+            padding-left: 10px;
+        }
+
+        #instructions-section li {
+            margin-bottom: 10px;
+        }
+
+        #image-section {
+            float: right;
+            width: 35%;
+            margin-top: 20px;
+        }
+
+        #image-section img {
+            max-width: 60%;
+            height: 80%;
+            display: block;
+            border-radius: 10px;
+        }
+        /* Progress bar styles */
+        #progress-container {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #ccc;
+            position: relative;
+        }
+
+        #progress {
+            width: 0;
+            height: 100%;
+            background-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar" id="myNavbar">
+        <a href="#home">Home</a>
+
+        <a href="#contact">Contact Us</a>
+        <a href="#about">About Us</a>
+        <a href="#logout">Log Out</a>
+        <a href="javascript:void(0);" class="icon" onclick="toggleNav()">
+            &#9776;
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>KYC Dashboard</h1>
+    </div>
+
+   <form action="/dashboard" method="POST" enctype="multipart/form-data">
+    <div id="upload-section">
+        <h2>Upload Document</h2>
+        <div id="drag-drop-area" class="drag-drop-area">
+            <p>Drag and drop your file here, or</p>
+            <input type="file" id="document-upload" name="file" accept=".pdf, .jpg, .png, .jpeg">
+            <button type="submit" id="process-document">Process Document</button>
+        </div>
+        <!-- Progress bar container -->
+        <div id="progress-container">
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+        </div>
+    </div>
+</form>
+
+    <div class="inst">
+        <div id="instructions-section">
+            <h2>Instructions</h2>
+            <p>Please follow these instructions:</p>
+            <ol>
+                <li>Choose a document file (PDF, JPG, PNG, or JPEG) using the "Choose File" button above.</li>
+                <li>Click the "Process Document" button to upload and process the selected file.</li>
+                <li>Wait for the processing to complete, and you will see the results in the console.</li>
+            </ol>
+        </div>
+
+        <div id="image-section">
+            <img src="https://www.shutterstock.com/shutterstock/photos/1661857768/display_1500/stock-vector-dummy-aadhar-card-unique-identity-document-for-indian-citizen-issued-by-government-of-india-vector-1661857768.jpg" alt="Instructions Image">
+        </div>
+    </div>
+
+    <script>
+        function toggleNav() {
+            const navbar = document.getElementById("myNavbar");
+            if (navbar.className === "navbar") {
+                navbar.className += " responsive";
+            } else {
+                navbar.className = "navbar";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const documentUploadInput = document.getElementById("document-upload");
+            const dragDropArea = document.getElementById("drag-drop-area");
+            const fileNameDisplay = document.getElementById("file-name");
+
+            let uploadedDocument = null;
+
+            // Function to update the file name display
+            function updateFileNameDisplay() {
+                if (uploadedDocument) {
+                    fileNameDisplay.textContent = "Selected File: " + uploadedDocument.name;
+                } else {
+                    fileNameDisplay.textContent = "";
+                }
+            }
+
+            // Event listener for document upload input
+            documentUploadInput.addEventListener("change", function (event) {
+                uploadedDocument = event.target.files[0];
+                updateFileNameDisplay();
+            });
+
+            // Event listeners for drag and drop area
+            dragDropArea.addEventListener("dragover", function (event) {
+                event.preventDefault();
+                dragDropArea.classList.add("drag-over");
+            });
+
+            dragDropArea.addEventListener("dragleave", function () {
+                dragDropArea.classList.remove("drag-over");
+            });
+
+            dragDropArea.addEventListener("drop", function (event) {
+                event.preventDefault();
+                uploadedDocument = event.dataTransfer.files[0];
+                updateFileNameDisplay();
+                dragDropArea.classList.remove("drag-over");
+            });
+
+            // Event listener for processing the document
+             // Event listener for processing the document
+    const processDocumentButton = document.getElementById("process-document");
+    processDocumentButton.addEventListener("click", function () {
+        if (uploadedDocument) {
+            // Create a FormData object to send the uploaded file
+            const formData = new FormData();
+            formData.append("file", uploadedDocument);
+
+            // Send the uploaded file to the server using fetch
+            fetch("/dashboard", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.message === "data stored successfully") {
+                        alert("Documents Uploaded successfully!");
+                        // Redirect to another page or perform additional actions if needed
+                        window.location.href = '/capture';
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch((error) => {
+                    alert("Error: " + error.message);
+                });
+
+            uploadedDocument = null;
+            updateFileNameDisplay();
+        } else {
+            alert("Please upload a document first.");
+        }
+    });
+
+    // Update the file name display initially
+    updateFileNameDisplay();
+});
+    </script>
+</body>
+</html>

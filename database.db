@@ -1,0 +1,8 @@
+SQLite format 3
+CREATE TABLE user (
+	id INTEGER NOT NULL, 
+	username VARCHAR(80), 
+	email VARCHAR(120), 
+	password VARCHAR(80), 
+	PRIMARY KEY (id)
+)

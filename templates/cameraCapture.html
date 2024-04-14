@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Photo Capture</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: skyblue;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Navigation links */
+        .navbar a {
+            color: white;
+            float: right;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* On hover, the links will change color */
+        .navbar a:hover {
+            background-color: white;
+            color: skyblue;
+            font-weight: bold;
+        }
+
+        /* Create a "hamburger" icon for the responsive navigation menu */
+        .navbar .icon {
+            display: none;
+            float: right;
+        }
+
+        /* Style the icon */
+        .navbar .icon:hover {
+            background-color: transparent;
+        }
+
+        /* Show the navigation links when the screen is wide enough */
+        @media screen and (min-width: 768px) {
+            .navbar a {
+                display: inline-block;
+            }
+
+            .navbar .icon {
+                display: none;
+            }
+        }
+
+        /* Show the "hamburger" icon and hide the navigation links when the screen is narrow */
+        @media screen and (max-width: 767px) {
+            .navbar a:not(.icon) {
+                display: none;
+            }
+
+            .navbar a.icon {
+                display: block;
+            }
+
+            /* Show the navigation links when the icon is clicked (toggle between showing and hiding) */
+            .navbar.responsive {
+                position: relative;
+            }
+
+            .navbar.responsive a {
+                display: block;
+                text-align: left;
+            }
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            margin-top: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        #capture-button {
+            background-color: skyblue; /* Blue background color */
+            color: white; /* White text color */
+            font-weight: bold; /* Bold text */
+            padding: 10px 20px; /* Padding for the button */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Cursor on hover */
+        }
+
+        /* Style for the capture button on hover */
+        #capture-button:hover {
+            background-color: #007acc; /* Darker blue color on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navbar" id="myNavbar">
+        <a href="#home">Home</a>
+        <a href="#contact">Contact Us</a>
+        <a href="#about">About Us</a>
+        <a href="#logout">Log Out</a>
+    </div>
+
+    <div class="container">
+        <h1>KYC Dashboard</h1>
+    </div><br><br>
+    <video id="camera-preview" autoplay></video>
+    <button id="capture-button">Capture Photo</button>
+    <canvas id="photo-canvas" style="display: none;"></canvas>
+    <img id="captured-photo" src="" alt="captured image will be shown here">
+    <script>
+        const videoElement = document.getElementById('camera-preview');
+        const canvasElement = document.getElementById('photo-canvas');
+        const capturedPhotoElement = document.getElementById('captured-photo');
+        const captureButton = document.getElementById('capture-button');
+
+        navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then((stream) => {
+                videoElement.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error accessing camera:', error);
+            });
+
+        captureButton.addEventListener('click', () => {
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+            canvasElement.getContext('2d').drawImage(videoElement, 0, 0);
+            const capturedPhotoDataUrl = canvasElement.toDataURL('image/jpeg');
+            capturedPhotoElement.src = capturedPhotoDataUrl;
+
+            // Send the captured photo data to the server
+            fetch('/save_photo', {
+                method: 'POST',
+                body: JSON.stringify({ photo_data: capturedPhotoDataUrl }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.message=="Match successful") {
+                    alert('Congratulations your kyc is completed');
+                     // Redirect to done.html when OK is clicked
+                    window.location.href = '/done';
+                }else if (data.message=="Match unsuccessful") {
+                    alert('Oops your kyc is incomplete as the face did not match');
+                }else{
+                    alert(data.message)
+                }
+                console.log('Photo saved:', data.message);
+            })
+            .catch((error) => {
+                console.error('Error saving photo:', error);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: skyblue;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Navigation links */
+        .navbar a {
+            color: white;
+            float: right;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* On hover, the links will change color */
+        .navbar a:hover {
+            background-color: white;
+            color: skyblue;
+            font-weight: bold;
+        }
+
+        /* Create a "hamburger" icon for the responsive navigation menu */
+        .navbar .icon {
+            display: none;
+            float: right;
+        }
+
+        /* Style the icon */
+        .navbar .icon:hover {
+            background-color: transparent;
+        }
+
+        /* Show the navigation links when the screen is wide enough */
+        @media screen and (min-width: 768px) {
+            .navbar a {
+                display: inline-block;
+            }
+
+            .navbar .icon {
+                display: none;
+            }
+        }
+
+        /* Show the "hamburger" icon and hide the navigation links when the screen is narrow */
+        @media screen and (max-width: 767px) {
+            .navbar a:not(.icon) {
+                display: none;
+            }
+
+            .navbar a.icon {
+                display: block;
+            }
+
+            /* Show the navigation links when the icon is clicked (toggle between showing and hiding) */
+            .navbar.responsive {
+                position: relative;
+            }
+
+            .navbar.responsive a {
+                display: block;
+                text-align: left;
+            }
+        }
+
+
+
+        h1, h2 {
+            color: #333;
+        }
+
+        #image-section{
+            align-items: center;
+            padding-left: 40%;
+            padding-right: 40px;
+            padding-top: 90px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar" id="myNavbar">
+    <a href="#home">Home</a>
+    <a href="#contact">Contact Us</a>
+    <a href="#about">About Us</a>
+    <a href="#logout">Log Out</a>
+    <a href="javascript:void(0);" class="icon" onclick="toggleNav()">
+        &#9776;
+    </a>
+</div>
+
+
+<div id="image-section">
+    <img src="{{ url_for('static', filename='happy.png') }}" alt="Happy Image" style="max-width: 100%;">
+    <br><h2>Congratulations KYC completed!!!</h2>
+</div>
+
+
+<script>
+    function toggleNav() {
+        const navbar = document.getElementById("myNavbar");
+        if (navbar.className === "navbar") {
+            navbar.className += " responsive";
+        } else {
+            navbar.className = "navbar";
+        }
+    }
+
+   </script>
+</body>
+</html>
